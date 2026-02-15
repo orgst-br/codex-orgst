@@ -21,7 +21,6 @@ wheels = [
 ]
 
 [[package]]
-<<<<<<< HEAD
 name = "astroid"
 version = "4.0.4"
 source = { registry = "https://pypi.org/simple" }
@@ -31,8 +30,6 @@ wheels = [
 ]
 
 [[package]]
-=======
->>>>>>> 13000a6 (chore: setup inicial (Django/Ninja, settings por env, docker-compose Postgres))
 name = "black"
 version = "26.1.0"
 source = { registry = "https://pypi.org/simple" }
@@ -86,7 +83,6 @@ wheels = [
 ]
 
 [[package]]
-<<<<<<< HEAD
 name = "dill"
 version = "0.4.1"
 source = { registry = "https://pypi.org/simple" }
@@ -96,8 +92,6 @@ wheels = [
 ]
 
 [[package]]
-=======
->>>>>>> 13000a6 (chore: setup inicial (Django/Ninja, settings por env, docker-compose Postgres))
 name = "django"
 version = "6.0.2"
 source = { registry = "https://pypi.org/simple" }
@@ -143,7 +137,6 @@ wheels = [
 ]
 
 [[package]]
-<<<<<<< HEAD
 name = "isort"
 version = "7.0.0"
 source = { registry = "https://pypi.org/simple" }
@@ -162,8 +155,6 @@ wheels = [
 ]
 
 [[package]]
-=======
->>>>>>> 13000a6 (chore: setup inicial (Django/Ninja, settings por env, docker-compose Postgres))
 name = "mypy-extensions"
 version = "1.1.0"
 source = { registry = "https://pypi.org/simple" }
@@ -180,21 +171,15 @@ dependencies = [
     { name = "django" },
     { name = "django-environ" },
     { name = "django-ninja" },
-<<<<<<< HEAD
     { name = "pillow" },
-=======
->>>>>>> 13000a6 (chore: setup inicial (Django/Ninja, settings por env, docker-compose Postgres))
     { name = "psycopg" },
 ]
 
 [package.dev-dependencies]
 dev = [
     { name = "black" },
-<<<<<<< HEAD
     { name = "pylint" },
     { name = "pylint-django" },
-=======
->>>>>>> 13000a6 (chore: setup inicial (Django/Ninja, settings por env, docker-compose Postgres))
     { name = "pytest" },
     { name = "pytest-django" },
     { name = "ruff" },
@@ -205,21 +190,15 @@ requires-dist = [
     { name = "django", specifier = ">=6.0.2" },
     { name = "django-environ", specifier = ">=0.12.1" },
     { name = "django-ninja", specifier = ">=1.5.3" },
-<<<<<<< HEAD
     { name = "pillow", specifier = ">=12.1.1" },
-=======
->>>>>>> 13000a6 (chore: setup inicial (Django/Ninja, settings por env, docker-compose Postgres))
     { name = "psycopg", specifier = ">=3.3.2" },
 ]
 
 [package.metadata.requires-dev]
 dev = [
     { name = "black", specifier = ">=26.1.0" },
-<<<<<<< HEAD
     { name = "pylint", specifier = ">=4.0.4" },
     { name = "pylint-django", specifier = ">=2.7.0" },
-=======
->>>>>>> 13000a6 (chore: setup inicial (Django/Ninja, settings por env, docker-compose Postgres))
     { name = "pytest", specifier = ">=9.0.2" },
     { name = "pytest-django", specifier = ">=4.11.1" },
     { name = "ruff", specifier = ">=0.15.1" },
@@ -244,7 +223,6 @@ wheels = [
 ]
 
 [[package]]
-<<<<<<< HEAD
 name = "pillow"
 version = "12.1.1"
 source = { registry = "https://pypi.org/simple" }
@@ -314,8 +292,6 @@ wheels = [
 ]
 
 [[package]]
-=======
->>>>>>> 13000a6 (chore: setup inicial (Django/Ninja, settings por env, docker-compose Postgres))
 name = "platformdirs"
 version = "4.8.0"
 source = { registry = "https://pypi.org/simple" }
