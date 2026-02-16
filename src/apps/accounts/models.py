@@ -42,6 +42,7 @@ class Profile(TimeStampedModel):
 
     github_url = models.URLField(max_length=250, null=True, blank=True)
     linkedin_url = models.URLField(max_length=250, null=True, blank=True)
+    instagram_url = models.URLField(max_length=250, null=True, blank=True)
 
     avatar = models.ImageField(upload_to="avatars/", null=True, blank=True)
 
