@@ -23,11 +23,26 @@ class User(AbstractUser):
 
 
 class Profile(TimeStampedModel):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="profile") # noqa
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="profile",
+    )
+
     display_name = models.CharField(max_length=160)
 
-    # campos futuros: bio, links, location, etc
+    # comunidade (fase 2)
 
+    birth_date = models.DateField(null=True, blank=True)
+    profession = models.CharField(max_length=120, null=True, blank=True)
+    bio = models.TextField(null=True, blank=True)
+    location = models.CharField(max_length=120, null=True, blank=True)
+
+    github_url = models.URLField(max_length=250, null=True, blank=True)
+    linkedin_url = models.URLField(max_length=250, null=True, blank=True)
+
+    avatar = models.ImageField(upload_to="avatars/", null=True, blank=True)
+    
     def __str__(self) -> str:
         return str(self.display_name)
 
@@ -59,7 +74,6 @@ class UserRole(TimeStampedModel):
 
     def __str__(self) -> str:
         return f"{self.user} - {self.role}"
-    
 
 class InvitationStatus(models.TextChoices):
     PENDING = "pending", "Pending"

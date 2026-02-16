@@ -1,0 +1,13 @@
+[MAIN]
+load-plugins=pylint_django
+source-roots=src
+init-hook=import sys; sys.path.append("src")
+
+[DJANGO FOREIGN KEYS REFERENCED BY STRINGS]
+django-settings-module=orgst.settings.base
+
+[MESSAGES CONTROL]
+disable=
+    missing-module-docstring,
+    missing-class-docstring,
+    missing-function-docstring

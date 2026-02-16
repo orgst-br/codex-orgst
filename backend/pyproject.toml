@@ -8,6 +8,7 @@ dependencies = [
     "django>=6.0.2",
     "django-environ>=0.12.1",
     "django-ninja>=1.5.3",
+    "pillow>=12.1.1",
     "psycopg>=3.3.2",
 ]
 
