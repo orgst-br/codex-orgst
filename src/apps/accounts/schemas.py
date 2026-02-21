@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from ninja import Schema
+from pydantic import Field
 
 
 class InvitationCreateIn(Schema):
@@ -20,7 +21,7 @@ class InvitationCreateOut(Schema):
 class InvitationValidateOut(Schema):
     valid: bool
     email: str | None = None
-    role_keys: list[str] = []
+    role_keys: list[str] = Field(default_factory=list)
     expires_at: datetime | None = None
 
 

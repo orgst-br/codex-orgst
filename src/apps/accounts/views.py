@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.http import HttpRequest
 from ninja import Router
+from ninja.errors import HttpError
 
 from .schemas import (
     InvitationAcceptIn,
@@ -15,14 +16,21 @@ router = Router(tags=["accounts"])
 User = get_user_model()
 
 
+def _can_create_invitation(user) -> bool:
+    # MVP: permite staff do Django Admin OU role de produto (admin/cofounder)
+    if not getattr(user, "is_authenticated", False):
+        return False
+    if getattr(user, "is_staff", False):
+        return True
+    return user.user_roles.filter(role__key__in=["admin", "cofounder"]).exists()
+
+
 @router.post("/invitations", response=InvitationCreateOut)
 def api_create_invitation(request: HttpRequest, payload: InvitationCreateIn):
     # MVP: usa usuário autenticado via Django Admin session.
     # Depois trocamos para JWT facilmente.
-    if not request.user.is_authenticated:
-        # Ninja vai serializar isso em 500 se levantar Exception genérica;
-        # depois a gente padroniza erro.
-        raise PermissionError("AUTH_REQUIRED")
+    if not _can_create_invitation(request.user):
+        raise HttpError(403, "FORBIDDEN")
 
     created = create_invitation(
         invited_by=request.user,
@@ -41,7 +49,7 @@ def api_create_invitation(request: HttpRequest, payload: InvitationCreateIn):
     }
 
 
-@router.get("/invitations/validate", response=InvitationValidateOut)
+@router.get("/invitations/validate", auth=None, response=InvitationValidateOut)
 def api_validate_invitation(request: HttpRequest, token: str):
     inv = validate_invitation_token(token=token)
     if not inv:
@@ -55,7 +63,7 @@ def api_validate_invitation(request: HttpRequest, token: str):
     }
 
 
-@router.post("/invitations/accept", response=InvitationAcceptOut)
+@router.post("/invitations/accept", auth=None, response=InvitationAcceptOut)
 def api_accept_invitation(request: HttpRequest, payload: InvitationAcceptIn):
     user = accept_invitation(
         token=payload.token,
