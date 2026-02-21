@@ -1,14 +1,18 @@
 from django.contrib.auth import get_user_model
+from django.db.models import Q
 from django.http import HttpRequest
 from ninja import Router
 from ninja.errors import HttpError
 
+from .auth import create_access_token
 from .schemas import (
     InvitationAcceptIn,
     InvitationAcceptOut,
     InvitationCreateIn,
     InvitationCreateOut,
     InvitationValidateOut,
+    TokenIn,
+    TokenOut,
 )
 from .services import accept_invitation, create_invitation, validate_invitation_token
 
@@ -17,7 +21,6 @@ User = get_user_model()
 
 
 def _can_create_invitation(user) -> bool:
-    # MVP: permite staff do Django Admin OU role de produto (admin/cofounder)
     if not getattr(user, "is_authenticated", False):
         return False
     if getattr(user, "is_staff", False):
@@ -25,10 +28,26 @@ def _can_create_invitation(user) -> bool:
     return user.user_roles.filter(role__key__in=["admin", "cofounder"]).exists()
 
 
+@router.post("/auth/token", auth=None, response=TokenOut)
+def api_token(request: HttpRequest, payload: TokenIn):
+    identifier = payload.identifier.strip()
+
+    user = (
+        User.objects.filter(
+            Q(email__iexact=identifier) | Q(username__iexact=identifier)
+        )
+        .only("id", "is_active", "password", "email", "username")
+        .first()
+    )
+
+    if not user or not user.is_active or not user.check_password(payload.password):
+        raise HttpError(401, "INVALID_CREDENTIALS")
+
+    return {"access": create_access_token(user)}
+
+
 @router.post("/invitations", response=InvitationCreateOut)
 def api_create_invitation(request: HttpRequest, payload: InvitationCreateIn):
-    # MVP: usa usuário autenticado via Django Admin session.
-    # Depois trocamos para JWT facilmente.
     if not _can_create_invitation(request.user):
         raise HttpError(403, "FORBIDDEN")
 
@@ -65,9 +84,13 @@ def api_validate_invitation(request: HttpRequest, token: str):
 
 @router.post("/invitations/accept", auth=None, response=InvitationAcceptOut)
 def api_accept_invitation(request: HttpRequest, payload: InvitationAcceptIn):
-    user = accept_invitation(
-        token=payload.token,
-        password=payload.password,
-        display_name=payload.display_name,
-    )
+    try:
+        user = accept_invitation(
+            token=payload.token,
+            password=payload.password,
+            display_name=payload.display_name,
+        )
+    except ValueError:
+        raise HttpError(400, "INVALID_OR_EXPIRED_INVITATION") from None
+
     return {"user_id": str(user.id), "email": user.email}

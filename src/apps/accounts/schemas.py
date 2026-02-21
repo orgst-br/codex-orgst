@@ -25,6 +25,16 @@ class InvitationValidateOut(Schema):
     expires_at: datetime | None = None
 
 
+class TokenIn(Schema):
+    # pode ser email OU username (te dá flexibilidade sem migration)
+    identifier: str
+    password: str
+
+
+class TokenOut(Schema):
+    access: str
+
+
 class InvitationAcceptIn(Schema):
     token: str
     password: str
