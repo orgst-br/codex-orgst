@@ -11,7 +11,9 @@ dependencies = [
     "django-ninja>=1.5.3",
     "pillow>=12.1.1",
     "psycopg>=3.3.2",
+    "pyjwt>=2.11.0",
     "pylint-django>=2.7.0",
+    "python-dotenv>=1.2.1",
 ]
 
 [dependency-groups]
