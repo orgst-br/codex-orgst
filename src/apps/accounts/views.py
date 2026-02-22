@@ -24,7 +24,7 @@ User = get_user_model()
 def _can_create_invitation(user) -> bool:
     if not getattr(user, "is_authenticated", False):
         return False
-    if getattr(user, "is_staff", False):
+    if getattr(user, "is_superuser", False):
         return True
     return user.user_roles.filter(role__key__in=["admin", "cofounder"]).exists()
 
