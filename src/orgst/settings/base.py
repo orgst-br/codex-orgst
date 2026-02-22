@@ -46,9 +46,16 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "orgst.common.middleware.ForcePasswordChangeMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+AUTHENTICATION_BACKENDS = [
+    "apps.accounts.backends.EmailOrUsernameBackend",
+    "django.contrib.auth.backends.ModelBackend",
+]
+
 
 ROOT_URLCONF = "orgst.urls"
 
@@ -70,19 +77,24 @@ TEMPLATES = [
 WSGI_APPLICATION = "orgst.wsgi.application"
 ASGI_APPLICATION = "orgst.asgi.application"
 
-DATABASE_URL = os.getenv("DATABASE_URL")
-if not DATABASE_URL:
-    raise RuntimeError(
-        "DATABASE_URL não está definido (configure no .env ou nas env vars)."
-    )
+default_sqlite_url = f"sqlite:///{BASE_DIR.parent / 'db.sqlite3'}"
+DATABASE_URL = env("DATABASE_URL", default=default_sqlite_url)
 
-DATABASES = {
-    "default": dj_database_url.parse(
-        DATABASE_URL,
-        conn_max_age=600,
-        ssl_require=True,
-    )
-}
+db_config = dj_database_url.parse(
+    DATABASE_URL,
+    conn_max_age=600,
+    ssl_require=False,
+)
+
+if db_config.get("ENGINE") == "django.db.backends.postgresql":
+    db_config.setdefault("OPTIONS", {})
+
+    # Só força SSL se explicitamente configurado
+    if env.bool("DB_SSL_REQUIRE", default=False):
+        db_config["OPTIONS"]["sslmode"] = "require"
+
+DATABASES = {"default": db_config}
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
