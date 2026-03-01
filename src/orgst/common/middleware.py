@@ -1,5 +1,37 @@
 from django.conf import settings
 from django.http import HttpResponse
+from django.shortcuts import redirect
+from django.urls import reverse
+
+
+class ForcePasswordChangeMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        user = getattr(request, "user", None)
+
+        if not user or not user.is_authenticated:
+            return self.get_response(request)
+
+        if not getattr(user, "must_change_password", False):
+            return self.get_response(request)
+
+        # Só força dentro do admin.
+        if not request.path.startswith("/admin/"):
+            return self.get_response(request)
+
+        force_url = reverse("admin_force_password_change")
+        allowed = {
+            force_url,
+            reverse("admin:login"),
+            reverse("admin:logout"),
+        }
+
+        if request.path not in allowed:
+            return redirect(force_url)
+
+        return self.get_response(request)
 
 
 class DevCORSMiddleware:
